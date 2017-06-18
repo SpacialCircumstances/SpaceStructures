@@ -176,7 +176,7 @@ var Main = function() { };
 $hxClasses["Main"] = Main;
 Main.__name__ = true;
 Main.main = function() {
-	kha_System.init({ title : "Project", width : 1024, height : 768},function() {
+	kha_System.init({ title : "Space Structures", width : 1200, height : 900},function() {
 		new Project();
 	});
 };
@@ -184,6 +184,8 @@ Math.__name__ = true;
 var Project = function() {
 	kha_System.notifyOnRender($bind(this,this.render));
 	kha_Scheduler.addTimeTask($bind(this,this.update),0,0.016666666666666666);
+	this.backbuffer = kha_Image.createRenderTarget(1200,900);
+	this.bg = -16776961;
 };
 $hxClasses["Project"] = Project;
 Project.__name__ = true;
@@ -191,6 +193,12 @@ Project.prototype = {
 	update: function() {
 	}
 	,render: function(framebuffer) {
+		var g = this.backbuffer.get_g2();
+		g.begin(null,this.bg);
+		g.end();
+		framebuffer.get_g2().begin();
+		kha_Scaler.scale(this.backbuffer,framebuffer,kha_System.get_screenRotation());
+		framebuffer.get_g2().end();
 	}
 	,__class__: Project
 };
@@ -2477,6 +2485,208 @@ kha_Rotation.__name__ = true;
 kha_Rotation.prototype = {
 	__class__: kha_Rotation
 };
+var kha_TargetRectangle = function(x,y,w,h,s,r) {
+	this.x = x;
+	this.y = y;
+	this.width = w;
+	this.height = h;
+	this.scaleFactor = s;
+	this.rotation = r;
+};
+$hxClasses["kha.TargetRectangle"] = kha_TargetRectangle;
+kha_TargetRectangle.__name__ = true;
+kha_TargetRectangle.prototype = {
+	__class__: kha_TargetRectangle
+};
+var kha_Scaler = function() { };
+$hxClasses["kha.Scaler"] = kha_Scaler;
+kha_Scaler.__name__ = true;
+kha_Scaler.targetRect = function(width,height,destinationWidth,destinationHeight,rotation) {
+	var scalex;
+	var scaley;
+	var scalew;
+	var scaleh;
+	var scale;
+	switch(rotation[1]) {
+	case 0:
+		if(width / height > destinationWidth / destinationHeight) {
+			scale = destinationWidth / width;
+			scalew = width * scale;
+			scaleh = height * scale;
+			scalex = 0;
+			scaley = (destinationHeight - scaleh) * 0.5;
+		} else {
+			scale = destinationHeight / height;
+			scalew = width * scale;
+			scaleh = height * scale;
+			scalex = (destinationWidth - scalew) * 0.5;
+			scaley = 0;
+		}
+		break;
+	case 1:
+		if(width / height > destinationHeight / destinationWidth) {
+			scale = destinationHeight / width;
+			scalew = width * scale;
+			scaleh = height * scale;
+			scalex = (destinationWidth - scaleh) * 0.5 + scaleh;
+			scaley = 0;
+		} else {
+			scale = destinationWidth / height;
+			scalew = width * scale;
+			scaleh = height * scale;
+			scalex = scaleh;
+			scaley = (destinationHeight - scalew) * 0.5;
+		}
+		break;
+	case 2:
+		if(width / height > destinationWidth / destinationHeight) {
+			scale = destinationWidth / width;
+			scalew = width * scale;
+			scaleh = height * scale;
+			scalex = scalew;
+			scaley = (destinationHeight - scaleh) * 0.5 + scaleh;
+		} else {
+			scale = destinationHeight / height;
+			scalew = width * scale;
+			scaleh = height * scale;
+			scalex = (destinationWidth - scalew) * 0.5 + scalew;
+			scaley = scaleh;
+		}
+		break;
+	case 3:
+		if(width / height > destinationHeight / destinationWidth) {
+			scale = destinationHeight / width;
+			scalew = width * scale;
+			scaleh = height * scale;
+			scalex = (destinationWidth - scaleh) * 0.5;
+			scaley = scalew;
+		} else {
+			scale = destinationWidth / height;
+			scalew = width * scale;
+			scaleh = height * scale;
+			scalex = 0;
+			scaley = (destinationHeight - scalew) * 0.5 + scalew;
+		}
+		break;
+	}
+	return new kha_TargetRectangle(scalex,scaley,scalew,scaleh,scale,rotation);
+};
+kha_Scaler.transformXDirectly = function(x,y,sourceWidth,sourceHeight,destinationWidth,destinationHeight,rotation) {
+	var targetRect = kha_Scaler.targetRect(sourceWidth,sourceHeight,destinationWidth,destinationHeight,rotation);
+	var _g = targetRect.rotation;
+	switch(_g[1]) {
+	case 0:
+		return (x - targetRect.x) / targetRect.scaleFactor | 0;
+	case 1:
+		return (y - targetRect.y) / targetRect.scaleFactor | 0;
+	case 2:
+		return (targetRect.x - x) / targetRect.scaleFactor | 0;
+	case 3:
+		return (targetRect.y - y) / targetRect.scaleFactor | 0;
+	}
+};
+kha_Scaler.transformX = function(x,y,source,destination,rotation) {
+	return kha_Scaler.transformXDirectly(x,y,source.get_width(),source.get_height(),destination.get_width(),destination.get_height(),rotation);
+};
+kha_Scaler.transformYDirectly = function(x,y,sourceWidth,sourceHeight,destinationWidth,destinationHeight,rotation) {
+	var targetRect = kha_Scaler.targetRect(sourceWidth,sourceHeight,destinationWidth,destinationHeight,rotation);
+	var _g = targetRect.rotation;
+	switch(_g[1]) {
+	case 0:
+		return (y - targetRect.y) / targetRect.scaleFactor | 0;
+	case 1:
+		return (targetRect.x - x) / targetRect.scaleFactor | 0;
+	case 2:
+		return (targetRect.y - y) / targetRect.scaleFactor | 0;
+	case 3:
+		return (x - targetRect.x) / targetRect.scaleFactor | 0;
+	}
+};
+kha_Scaler.transformY = function(x,y,source,destination,rotation) {
+	return kha_Scaler.transformYDirectly(x,y,source.get_width(),source.get_height(),destination.get_width(),destination.get_height(),rotation);
+};
+kha_Scaler.scale = function(source,destination,rotation) {
+	var g = destination.get_g2();
+	var transformation = kha_Scaler.getScaledTransformation(source.get_width(),source.get_height(),destination.get_width(),destination.get_height(),rotation);
+	g.setTransformation(transformation);
+	var _this = g.transformations[g.transformations.length - 1];
+	_this._00 = transformation._00;
+	_this._10 = transformation._10;
+	_this._20 = transformation._20;
+	_this._01 = transformation._01;
+	_this._11 = transformation._11;
+	_this._21 = transformation._21;
+	_this._02 = transformation._02;
+	_this._12 = transformation._12;
+	_this._22 = transformation._22;
+	g.set_color(-1);
+	g.set_opacity(1);
+	g.drawImage(source,0,0);
+};
+kha_Scaler.getScaledTransformation = function(width,height,destinationWidth,destinationHeight,rotation) {
+	var rect = kha_Scaler.targetRect(width,height,destinationWidth,destinationHeight,rotation);
+	var sf = rect.scaleFactor;
+	var transformation = new kha_math_FastMatrix3(sf,0,rect.x,0,sf,rect.y,0,0,1);
+	switch(rotation[1]) {
+	case 0:
+		break;
+	case 1:
+		var m__22;
+		var m__21;
+		var m__20;
+		var m__12;
+		var m__02;
+		var alpha = Math.PI / 2;
+		var _00 = Math.cos(alpha);
+		var _10 = -Math.sin(alpha);
+		var _01 = Math.sin(alpha);
+		var _11 = Math.cos(alpha);
+		m__20 = 0;
+		m__21 = 0;
+		m__02 = 0;
+		m__12 = 0;
+		m__22 = 1;
+		transformation = new kha_math_FastMatrix3(transformation._00 * _00 + transformation._10 * _01 + transformation._20 * m__02,transformation._00 * _10 + transformation._10 * _11 + transformation._20 * m__12,transformation._00 * m__20 + transformation._10 * m__21 + transformation._20 * m__22,transformation._01 * _00 + transformation._11 * _01 + transformation._21 * m__02,transformation._01 * _10 + transformation._11 * _11 + transformation._21 * m__12,transformation._01 * m__20 + transformation._11 * m__21 + transformation._21 * m__22,transformation._02 * _00 + transformation._12 * _01 + transformation._22 * m__02,transformation._02 * _10 + transformation._12 * _11 + transformation._22 * m__12,transformation._02 * m__20 + transformation._12 * m__21 + transformation._22 * m__22);
+		break;
+	case 2:
+		var m__221;
+		var m__211;
+		var m__201;
+		var m__121;
+		var m__021;
+		var alpha1 = Math.PI;
+		var _001 = Math.cos(alpha1);
+		var _101 = -Math.sin(alpha1);
+		var _011 = Math.sin(alpha1);
+		var _111 = Math.cos(alpha1);
+		m__201 = 0;
+		m__211 = 0;
+		m__021 = 0;
+		m__121 = 0;
+		m__221 = 1;
+		transformation = new kha_math_FastMatrix3(transformation._00 * _001 + transformation._10 * _011 + transformation._20 * m__021,transformation._00 * _101 + transformation._10 * _111 + transformation._20 * m__121,transformation._00 * m__201 + transformation._10 * m__211 + transformation._20 * m__221,transformation._01 * _001 + transformation._11 * _011 + transformation._21 * m__021,transformation._01 * _101 + transformation._11 * _111 + transformation._21 * m__121,transformation._01 * m__201 + transformation._11 * m__211 + transformation._21 * m__221,transformation._02 * _001 + transformation._12 * _011 + transformation._22 * m__021,transformation._02 * _101 + transformation._12 * _111 + transformation._22 * m__121,transformation._02 * m__201 + transformation._12 * m__211 + transformation._22 * m__221);
+		break;
+	case 3:
+		var m__222;
+		var m__212;
+		var m__202;
+		var m__122;
+		var m__022;
+		var alpha2 = Math.PI * 3 / 2;
+		var _002 = Math.cos(alpha2);
+		var _102 = -Math.sin(alpha2);
+		var _012 = Math.sin(alpha2);
+		var _112 = Math.cos(alpha2);
+		m__202 = 0;
+		m__212 = 0;
+		m__022 = 0;
+		m__122 = 0;
+		m__222 = 1;
+		transformation = new kha_math_FastMatrix3(transformation._00 * _002 + transformation._10 * _012 + transformation._20 * m__022,transformation._00 * _102 + transformation._10 * _112 + transformation._20 * m__122,transformation._00 * m__202 + transformation._10 * m__212 + transformation._20 * m__222,transformation._01 * _002 + transformation._11 * _012 + transformation._21 * m__022,transformation._01 * _102 + transformation._11 * _112 + transformation._21 * m__122,transformation._01 * m__202 + transformation._11 * m__212 + transformation._21 * m__222,transformation._02 * _002 + transformation._12 * _012 + transformation._22 * m__022,transformation._02 * _102 + transformation._12 * _112 + transformation._22 * m__122,transformation._02 * m__202 + transformation._12 * m__212 + transformation._22 * m__222);
+		break;
+	}
+	return transformation;
+};
 var kha_TimeTask = function() {
 };
 $hxClasses["kha.TimeTask"] = kha_TimeTask;
@@ -2993,12 +3203,12 @@ kha_Shaders.init = function() {
 	var data1 = Reflect.field(kha_Shaders,"painter_colored_vertData");
 	var bytes1 = haxe_Unserializer.run(data1);
 	kha_Shaders.painter_colored_vert = new kha_graphics4_VertexShader(kha_internal_BytesBlob.fromBytes(bytes1),"painter_colored_vert");
-	var data2 = Reflect.field(kha_Shaders,"painter_image_vertData");
+	var data2 = Reflect.field(kha_Shaders,"painter_image_fragData");
 	var bytes2 = haxe_Unserializer.run(data2);
-	kha_Shaders.painter_image_vert = new kha_graphics4_VertexShader(kha_internal_BytesBlob.fromBytes(bytes2),"painter_image_vert");
-	var data3 = Reflect.field(kha_Shaders,"painter_image_fragData");
+	kha_Shaders.painter_image_frag = new kha_graphics4_FragmentShader(kha_internal_BytesBlob.fromBytes(bytes2),"painter_image_frag");
+	var data3 = Reflect.field(kha_Shaders,"painter_image_vertData");
 	var bytes3 = haxe_Unserializer.run(data3);
-	kha_Shaders.painter_image_frag = new kha_graphics4_FragmentShader(kha_internal_BytesBlob.fromBytes(bytes3),"painter_image_frag");
+	kha_Shaders.painter_image_vert = new kha_graphics4_VertexShader(kha_internal_BytesBlob.fromBytes(bytes3),"painter_image_vert");
 	var data4 = Reflect.field(kha_Shaders,"painter_text_fragData");
 	var bytes4 = haxe_Unserializer.run(data4);
 	kha_Shaders.painter_text_frag = new kha_graphics4_FragmentShader(kha_internal_BytesBlob.fromBytes(bytes4),"painter_text_frag");
@@ -19909,6 +20119,8 @@ if(ArrayBuffer.prototype.slice == null) {
 var DataView = $global.DataView || js_html_compat_DataView;
 var Float32Array = $global.Float32Array || js_html_compat_Float32Array._new;
 var Uint8Array = $global.Uint8Array || js_html_compat_Uint8Array._new;
+Project.screenWidth = 1200;
+Project.screenHeight = 900;
 haxe_Unserializer.DEFAULT_RESOLVER = new haxe__$Unserializer_DefaultResolver();
 haxe_Unserializer.BASE64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789%:";
 haxe_ds_ObjectMap.count = 0;
@@ -19936,8 +20148,8 @@ kha_Scheduler.maxframetime = 0.5;
 kha_Scheduler.startTime = 0;
 kha_Shaders.painter_colored_fragData = "s198:I3ZlcnNpb24gMTAwCnByZWNpc2lvbiBtZWRpdW1wIGZsb2F0OwpwcmVjaXNpb24gaGlnaHAgaW50OwoKdmFyeWluZyBoaWdocCB2ZWM0IGZyYWdtZW50Q29sb3I7Cgp2b2lkIG1haW4oKQp7CiAgICBnbF9GcmFnRGF0YVswXSA9IGZyYWdtZW50Q29sb3I7Cn0KCg";
 kha_Shaders.painter_colored_vertData = "s331:I3ZlcnNpb24gMTAwCgp1bmlmb3JtIG1hdDQgcHJvamVjdGlvbk1hdHJpeDsKCmF0dHJpYnV0ZSB2ZWMzIHZlcnRleFBvc2l0aW9uOwp2YXJ5aW5nIHZlYzQgZnJhZ21lbnRDb2xvcjsKYXR0cmlidXRlIHZlYzQgdmVydGV4Q29sb3I7Cgp2b2lkIG1haW4oKQp7CiAgICBnbF9Qb3NpdGlvbiA9IHByb2plY3Rpb25NYXRyaXggKiB2ZWM0KHZlcnRleFBvc2l0aW9uLCAxLjApOwogICAgZnJhZ21lbnRDb2xvciA9IHZlcnRleENvbG9yOwp9Cgo";
-kha_Shaders.painter_image_vertData = "s415:I3ZlcnNpb24gMTAwCgp1bmlmb3JtIG1hdDQgcHJvamVjdGlvbk1hdHJpeDsKCmF0dHJpYnV0ZSB2ZWMzIHZlcnRleFBvc2l0aW9uOwp2YXJ5aW5nIHZlYzIgdGV4Q29vcmQ7CmF0dHJpYnV0ZSB2ZWMyIHRleFBvc2l0aW9uOwp2YXJ5aW5nIHZlYzQgY29sb3I7CmF0dHJpYnV0ZSB2ZWM0IHZlcnRleENvbG9yOwoKdm9pZCBtYWluKCkKewogICAgZ2xfUG9zaXRpb24gPSBwcm9qZWN0aW9uTWF0cml4ICogdmVjNCh2ZXJ0ZXhQb3NpdGlvbiwgMS4wKTsKICAgIHRleENvb3JkID0gdGV4UG9zaXRpb247CiAgICBjb2xvciA9IHZlcnRleENvbG9yOwp9Cgo";
 kha_Shaders.painter_image_fragData = "s471:I3ZlcnNpb24gMTAwCnByZWNpc2lvbiBtZWRpdW1wIGZsb2F0OwpwcmVjaXNpb24gaGlnaHAgaW50OwoKdW5pZm9ybSBoaWdocCBzYW1wbGVyMkQgdGV4OwoKdmFyeWluZyBoaWdocCB2ZWMyIHRleENvb3JkOwp2YXJ5aW5nIGhpZ2hwIHZlYzQgY29sb3I7Cgp2b2lkIG1haW4oKQp7CiAgICBoaWdocCB2ZWM0IHRleGNvbG9yID0gdGV4dHVyZTJEKHRleCwgdGV4Q29vcmQpICogY29sb3I7CiAgICBoaWdocCB2ZWMzIF8zMiA9IHRleGNvbG9yLnh5eiAqIGNvbG9yLnc7CiAgICB0ZXhjb2xvciA9IHZlYzQoXzMyLngsIF8zMi55LCBfMzIueiwgdGV4Y29sb3Iudyk7CiAgICBnbF9GcmFnRGF0YVswXSA9IHRleGNvbG9yOwp9Cgo";
+kha_Shaders.painter_image_vertData = "s415:I3ZlcnNpb24gMTAwCgp1bmlmb3JtIG1hdDQgcHJvamVjdGlvbk1hdHJpeDsKCmF0dHJpYnV0ZSB2ZWMzIHZlcnRleFBvc2l0aW9uOwp2YXJ5aW5nIHZlYzIgdGV4Q29vcmQ7CmF0dHJpYnV0ZSB2ZWMyIHRleFBvc2l0aW9uOwp2YXJ5aW5nIHZlYzQgY29sb3I7CmF0dHJpYnV0ZSB2ZWM0IHZlcnRleENvbG9yOwoKdm9pZCBtYWluKCkKewogICAgZ2xfUG9zaXRpb24gPSBwcm9qZWN0aW9uTWF0cml4ICogdmVjNCh2ZXJ0ZXhQb3NpdGlvbiwgMS4wKTsKICAgIHRleENvb3JkID0gdGV4UG9zaXRpb247CiAgICBjb2xvciA9IHZlcnRleENvbG9yOwp9Cgo";
 kha_Shaders.painter_text_fragData = "s351:I3ZlcnNpb24gMTAwCnByZWNpc2lvbiBtZWRpdW1wIGZsb2F0OwpwcmVjaXNpb24gaGlnaHAgaW50OwoKdW5pZm9ybSBoaWdocCBzYW1wbGVyMkQgdGV4OwoKdmFyeWluZyBoaWdocCB2ZWM0IGZyYWdtZW50Q29sb3I7CnZhcnlpbmcgaGlnaHAgdmVjMiB0ZXhDb29yZDsKCnZvaWQgbWFpbigpCnsKICAgIGdsX0ZyYWdEYXRhWzBdID0gdmVjNChmcmFnbWVudENvbG9yLnh5eiwgdGV4dHVyZTJEKHRleCwgdGV4Q29vcmQpLnggKiBmcmFnbWVudENvbG9yLncpOwp9Cgo";
 kha_Shaders.painter_text_vertData = "s436:I3ZlcnNpb24gMTAwCgp1bmlmb3JtIG1hdDQgcHJvamVjdGlvbk1hdHJpeDsKCmF0dHJpYnV0ZSB2ZWMzIHZlcnRleFBvc2l0aW9uOwp2YXJ5aW5nIHZlYzIgdGV4Q29vcmQ7CmF0dHJpYnV0ZSB2ZWMyIHRleFBvc2l0aW9uOwp2YXJ5aW5nIHZlYzQgZnJhZ21lbnRDb2xvcjsKYXR0cmlidXRlIHZlYzQgdmVydGV4Q29sb3I7Cgp2b2lkIG1haW4oKQp7CiAgICBnbF9Qb3NpdGlvbiA9IHByb2plY3Rpb25NYXRyaXggKiB2ZWM0KHZlcnRleFBvc2l0aW9uLCAxLjApOwogICAgdGV4Q29vcmQgPSB0ZXhQb3NpdGlvbjsKICAgIGZyYWdtZW50Q29sb3IgPSB2ZXJ0ZXhDb2xvcjsKfQoK";
 kha_Shaders.painter_video_fragData = "s471:I3ZlcnNpb24gMTAwCnByZWNpc2lvbiBtZWRpdW1wIGZsb2F0OwpwcmVjaXNpb24gaGlnaHAgaW50OwoKdW5pZm9ybSBoaWdocCBzYW1wbGVyMkQgdGV4OwoKdmFyeWluZyBoaWdocCB2ZWMyIHRleENvb3JkOwp2YXJ5aW5nIGhpZ2hwIHZlYzQgY29sb3I7Cgp2b2lkIG1haW4oKQp7CiAgICBoaWdocCB2ZWM0IHRleGNvbG9yID0gdGV4dHVyZTJEKHRleCwgdGV4Q29vcmQpICogY29sb3I7CiAgICBoaWdocCB2ZWMzIF8zMiA9IHRleGNvbG9yLnh5eiAqIGNvbG9yLnc7CiAgICB0ZXhjb2xvciA9IHZlYzQoXzMyLngsIF8zMi55LCBfMzIueiwgdGV4Y29sb3Iudyk7CiAgICBnbF9GcmFnRGF0YVswXSA9IHRleGNvbG9yOwp9Cgo";
