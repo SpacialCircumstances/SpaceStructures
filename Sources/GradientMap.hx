@@ -38,9 +38,8 @@ class GradientMap
 	public function clearGradients(): Void
 	{
 		map.clear();
-		fillStd();
 	}
-	function fillStd()
+	public function fillStd()
 	{
 		map.add(new Gradient(0, Color.Black));
 		map.add(new Gradient(1, Color.White));

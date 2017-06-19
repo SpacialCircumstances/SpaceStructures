@@ -22,12 +22,13 @@ class Project
 		System.notifyOnRender(render);
 		Scheduler.addTimeTask(update, 0, 1 / 60);
 		backbuffer = Image.createRenderTarget(screenWidth, screenHeight);
-		bg = Util.mixColor(Color.Blue, Color.White, 0.5);
 		map = new GradientMap();
 		map.clearGradients();
+		map.add(new Gradient(1, Color.Black));
+		map.add(new Gradient(0, Color.Cyan));
 		builder = new LinearImageBuilder();
 		bgimg = builder.generateImage(map, 1200, 900);
-		bg = Color.Cyan;
+		bg = Color.Black;
 	}
 
 	function update(): Void 
