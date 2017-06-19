@@ -185,7 +185,7 @@ var Project = function() {
 	kha_System.notifyOnRender($bind(this,this.render));
 	kha_Scheduler.addTimeTask($bind(this,this.update),0,0.016666666666666666);
 	this.backbuffer = kha_Image.createRenderTarget(1200,900);
-	this.bg = -16776961;
+	this.bg = Util.mixColor(-16776961,-1,0.5);
 };
 $hxClasses["Project"] = Project;
 Project.__name__ = true;
@@ -318,6 +318,22 @@ _$UInt_UInt_$Impl_$.toFloat = function(this1) {
 	} else {
 		return this1 + 0.0;
 	}
+};
+var Util = function() { };
+$hxClasses["Util"] = Util;
+Util.__name__ = true;
+Util.mixColor = function(col1,col2,f) {
+	var c1a = (col1 >>> 24) * 0.00392156862745098 * f;
+	var c1r = ((col1 & 16711680) >>> 16) * 0.00392156862745098 * f;
+	var c1g = ((col1 & 65280) >>> 8) * 0.00392156862745098 * f;
+	var c1b = (col1 & 255) * 0.00392156862745098 * f;
+	var f2 = 1 - f;
+	var c2a = (col2 >>> 24) * 0.00392156862745098 * f2;
+	var c2r = ((col2 & 16711680) >>> 16) * 0.00392156862745098 * f2;
+	var c2b = ((col2 & 65280) >>> 8) * 0.00392156862745098 * f2;
+	var c2g = (col2 & 255) * 0.00392156862745098 * f2;
+	var col = kha__$Color_Color_$Impl_$.fromFloats(c1r + c2r,c1g + c2g,c1b + c2b,c1a + c2a);
+	return col;
 };
 var haxe_IMap = function() { };
 $hxClasses["haxe.IMap"] = haxe_IMap;

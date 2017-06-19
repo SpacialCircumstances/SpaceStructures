@@ -19,7 +19,7 @@ class Project
 		System.notifyOnRender(render);
 		Scheduler.addTimeTask(update, 0, 1 / 60);
 		backbuffer = Image.createRenderTarget(screenWidth, screenHeight);
-		bg = Color.Blue;
+		bg = Util.mixColor(Color.Blue, Color.White, 0.5);
 	}
 
 	function update(): Void 
