@@ -14,12 +14,20 @@ class Project
 
 	private var backbuffer: Image;
 	private var bg: Color;
+	private var map: GradientMap;
+	private var bgimg: Image;
+	private var builder: LinearImageBuilder;
 	public function new() 
 	{
 		System.notifyOnRender(render);
 		Scheduler.addTimeTask(update, 0, 1 / 60);
 		backbuffer = Image.createRenderTarget(screenWidth, screenHeight);
 		bg = Util.mixColor(Color.Blue, Color.White, 0.5);
+		map = new GradientMap();
+		map.clearGradients();
+		builder = new LinearImageBuilder();
+		bgimg = builder.generateImage(map, 1200, 900);
+		bg = Color.Cyan;
 	}
 
 	function update(): Void 
@@ -31,7 +39,8 @@ class Project
 	{	
 		var g = backbuffer.g2;
 
-		g.begin(bg);
+		g.begin(Color.Black);
+		g.drawImage(bgimg, 0, 0);
 	    g.end();
 
     	framebuffer.g2.begin();

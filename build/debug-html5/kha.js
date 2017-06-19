@@ -33,6 +33,54 @@ EReg.prototype = {
 	}
 	,__class__: EReg
 };
+var Gradient = function(v,c) {
+	this.color = c;
+	this.value = v;
+};
+$hxClasses["Gradient"] = Gradient;
+Gradient.__name__ = true;
+Gradient.prototype = {
+	__class__: Gradient
+};
+var GradientMap = function() {
+	this.map = new List();
+	this.fillStd();
+};
+$hxClasses["GradientMap"] = GradientMap;
+GradientMap.__name__ = true;
+GradientMap.prototype = {
+	add: function(g) {
+		this.map.add(g);
+	}
+	,getColor: function(f) {
+		if(f < 0 || f > 1) {
+			return 0;
+		}
+		var low = new Gradient(0,-16777216);
+		var high = new Gradient(1,-1);
+		var _g_head = this.map.h;
+		while(_g_head != null) {
+			var val = _g_head.item;
+			_g_head = _g_head.next;
+			if(val.value >= f) {
+				high = val;
+			}
+			if(val.value <= f) {
+				low = val;
+			}
+		}
+		return Util.mixColor(low.color,high.color,f);
+	}
+	,clearGradients: function() {
+		this.map.clear();
+		this.fillStd();
+	}
+	,fillStd: function() {
+		this.map.add(new Gradient(0,-16777216));
+		this.map.add(new Gradient(1,-1));
+	}
+	,__class__: GradientMap
+};
 var HxOverrides = function() { };
 $hxClasses["HxOverrides"] = HxOverrides;
 HxOverrides.__name__ = true;
@@ -105,6 +153,26 @@ Lambda.array = function(it) {
 	}
 	return a;
 };
+var LinearImageBuilder = function() {
+};
+$hxClasses["LinearImageBuilder"] = LinearImageBuilder;
+LinearImageBuilder.__name__ = true;
+LinearImageBuilder.prototype = {
+	generateImage: function(map,width,height) {
+		var img = kha_Image.createRenderTarget(width,height);
+		var g2 = img.get_g2();
+		g2.begin();
+		var _g1 = 0;
+		while(_g1 < height) {
+			var i = _g1++;
+			g2.set_color(map.getColor(i / height));
+			g2.drawLine(0,i,width,i);
+		}
+		g2.end();
+		return img;
+	}
+	,__class__: LinearImageBuilder
+};
 var List = function() {
 	this.length = 0;
 };
@@ -120,6 +188,11 @@ List.prototype = {
 		}
 		this.q = x;
 		this.length++;
+	}
+	,clear: function() {
+		this.h = null;
+		this.q = null;
+		this.length = 0;
 	}
 	,remove: function(v) {
 		var prev = null;
@@ -186,6 +259,11 @@ var Project = function() {
 	kha_Scheduler.addTimeTask($bind(this,this.update),0,0.016666666666666666);
 	this.backbuffer = kha_Image.createRenderTarget(1200,900);
 	this.bg = Util.mixColor(-16776961,-1,0.5);
+	this.map = new GradientMap();
+	this.map.clearGradients();
+	this.builder = new LinearImageBuilder();
+	this.bgimg = this.builder.generateImage(this.map,1200,900);
+	this.bg = -16711681;
 };
 $hxClasses["Project"] = Project;
 Project.__name__ = true;
@@ -194,7 +272,8 @@ Project.prototype = {
 	}
 	,render: function(framebuffer) {
 		var g = this.backbuffer.get_g2();
-		g.begin(null,this.bg);
+		g.begin(null,-16777216);
+		g.drawImage(this.bgimg,0,0);
 		g.end();
 		framebuffer.get_g2().begin();
 		kha_Scaler.scale(this.backbuffer,framebuffer,kha_System.get_screenRotation());

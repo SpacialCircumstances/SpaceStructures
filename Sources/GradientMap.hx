@@ -20,25 +20,20 @@ class GradientMap
 		{
 			return Color.Transparent;
 		}
-		//Find lowest Gradient
-		var low: Gradient;
-		var d: Float = f;
+		var low: Gradient = new Gradient(0, Color.Black);
+		var high: Gradient = new Gradient(1, Color.White);
 		for(g in map)
 		{
-			if(g.value == f)
+			if(g.value >= f)
 			{
-				return g.color;
+				high = g;
 			}
-			else
+			if(g.value <= f)
 			{
-				if(f - g.value =< d)
-				{
-					d = f - g.value;
-					low = g;
-				}
+				low = g;
 			}
 		}
-		return low.color;
+		return Util.mixColor(low.color, high.color, f);
 	}
 	public function clearGradients(): Void
 	{
