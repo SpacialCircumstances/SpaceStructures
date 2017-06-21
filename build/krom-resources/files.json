@@ -3,7 +3,7 @@
 		{
 			"name": "painter_colored_vert",
 			"files": [
-				"painter-colored.vert.essl"
+				"painter-colored.vert.d3d11"
 			],
 			"type": "shader",
 			"inputs": [
@@ -40,7 +40,7 @@
 		{
 			"name": "painter_colored_frag",
 			"files": [
-				"painter-colored.frag.essl"
+				"painter-colored.frag.d3d11"
 			],
 			"type": "shader",
 			"inputs": [
@@ -58,38 +58,9 @@
 			"uniforms": []
 		},
 		{
-			"name": "painter_image_frag",
-			"files": [
-				"painter-image.frag.essl"
-			],
-			"type": "shader",
-			"inputs": [
-				{
-					"name": "texCoord",
-					"type": "vec2"
-				},
-				{
-					"name": "color",
-					"type": "vec4"
-				}
-			],
-			"outputs": [
-				{
-					"name": "gl_FragColor",
-					"type": "vec4"
-				}
-			],
-			"uniforms": [
-				{
-					"name": "tex",
-					"type": "sampler2D"
-				}
-			]
-		},
-		{
 			"name": "painter_image_vert",
 			"files": [
-				"painter-image.vert.essl"
+				"painter-image.vert.d3d11"
 			],
 			"type": "shader",
 			"inputs": [
@@ -132,9 +103,96 @@
 			]
 		},
 		{
+			"name": "painter_image_frag",
+			"files": [
+				"painter-image.frag.d3d11"
+			],
+			"type": "shader",
+			"inputs": [
+				{
+					"name": "texCoord",
+					"type": "vec2"
+				},
+				{
+					"name": "color",
+					"type": "vec4"
+				}
+			],
+			"outputs": [
+				{
+					"name": "gl_FragColor",
+					"type": "vec4"
+				}
+			],
+			"uniforms": [
+				{
+					"name": "tex",
+					"type": "sampler2D"
+				}
+			]
+		},
+		{
+			"name": "painter_video_frag",
+			"files": [
+				"painter-video.frag.d3d11"
+			],
+			"type": "shader",
+			"inputs": [
+				{
+					"name": "texCoord",
+					"type": "vec2"
+				},
+				{
+					"name": "color",
+					"type": "vec4"
+				}
+			],
+			"outputs": [
+				{
+					"name": "gl_FragColor",
+					"type": "vec4"
+				}
+			],
+			"uniforms": [
+				{
+					"name": "tex",
+					"type": "sampler2D"
+				}
+			]
+		},
+		{
+			"name": "painter_text_frag",
+			"files": [
+				"painter-text.frag.d3d11"
+			],
+			"type": "shader",
+			"inputs": [
+				{
+					"name": "fragmentColor",
+					"type": "vec4"
+				},
+				{
+					"name": "texCoord",
+					"type": "vec2"
+				}
+			],
+			"outputs": [
+				{
+					"name": "gl_FragColor",
+					"type": "vec4"
+				}
+			],
+			"uniforms": [
+				{
+					"name": "tex",
+					"type": "sampler2D"
+				}
+			]
+		},
+		{
 			"name": "painter_text_vert",
 			"files": [
-				"painter-text.vert.essl"
+				"painter-text.vert.d3d11"
 			],
 			"type": "shader",
 			"inputs": [
@@ -179,7 +237,7 @@
 		{
 			"name": "painter_video_vert",
 			"files": [
-				"painter-video.vert.essl"
+				"painter-video.vert.d3d11"
 			],
 			"type": "shader",
 			"inputs": [
@@ -218,64 +276,6 @@
 				{
 					"name": "projectionMatrix",
 					"type": "mat4"
-				}
-			]
-		},
-		{
-			"name": "painter_video_frag",
-			"files": [
-				"painter-video.frag.essl"
-			],
-			"type": "shader",
-			"inputs": [
-				{
-					"name": "texCoord",
-					"type": "vec2"
-				},
-				{
-					"name": "color",
-					"type": "vec4"
-				}
-			],
-			"outputs": [
-				{
-					"name": "gl_FragColor",
-					"type": "vec4"
-				}
-			],
-			"uniforms": [
-				{
-					"name": "tex",
-					"type": "sampler2D"
-				}
-			]
-		},
-		{
-			"name": "painter_text_frag",
-			"files": [
-				"painter-text.frag.essl"
-			],
-			"type": "shader",
-			"inputs": [
-				{
-					"name": "fragmentColor",
-					"type": "vec4"
-				},
-				{
-					"name": "texCoord",
-					"type": "vec2"
-				}
-			],
-			"outputs": [
-				{
-					"name": "gl_FragColor",
-					"type": "vec4"
-				}
-			],
-			"uniforms": [
-				{
-					"name": "tex",
-					"type": "sampler2D"
 				}
 			]
 		}

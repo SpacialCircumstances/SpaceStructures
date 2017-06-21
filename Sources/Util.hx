@@ -1,6 +1,7 @@
 package;
 
 import kha.Color;
+import kha.math.Random;
 
 class Util
 {
@@ -17,5 +18,28 @@ class Util
 		var c2g = col2.B * f2;
 		var col: Color = Color.fromFloats(c1r + c2r, c1g + c2g, c1b + c2b, c1a + c2a);
 		return col;
+	}
+	public static function randomColor(): Color
+	{
+		var r = Random.getIn(0, 255);
+		var g = Random.getIn(0, 255);
+		var b = Random.getIn(0, 255);
+		var c = Color.fromBytes(r, g, b);
+		return c;
+	}
+
+	public static function randomGrayscaleColor(?min = 0): Color
+	{
+		var n = Random.getIn(min, 255);
+		var c = Color.fromBytes(n, n, n);
+		return c;
+	}
+
+	public static function distance(x1: Float, y1: Float, x2: Float, y2: Float)
+	{
+		var u = (x1 - x2) * (x1 - x2);
+		var v = (y1 - y2) * (y1 - y2);
+		var d = Math.sqrt(u + v);
+		return d;
 	}
 }

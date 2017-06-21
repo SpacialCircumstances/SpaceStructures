@@ -15,9 +15,9 @@
     <output url="file://$MODULE_DIR$/../debug-html5" />
     <exclude-output />
     <content url="file://$MODULE_DIR$/../..">
-      <sourceFolder url="file://c:\Program Files\KodeStudio\resources\app\extensions\kha\Kha\Sources" isTestSource="false" />
-      <sourceFolder url="file://c:\Program Files\KodeStudio\resources\app\extensions\kha\Kha\Backends\HTML5" isTestSource="false" />
-      <sourceFolder url="file://f:\ProjectsGames\SpaceStructures\Sources" isTestSource="false" />
+      <sourceFolder url="file://g:\KodeStudio\resources\app\extensions\kha\Kha\Sources" isTestSource="false" />
+      <sourceFolder url="file://g:\KodeStudio\resources\app\extensions\kha\Kha\Backends\HTML5" isTestSource="false" />
+      <sourceFolder url="file://g:\SpaceStructures\SpaceStructures\Sources" isTestSource="false" />
 
     </content>
     

@@ -12,12 +12,12 @@
 		<movie minorVersion="0" />
 		<movie platform="JavaScript" />
 		<movie background="#ffffff" />
-		<movie preferredSDK="c:\Program Files\KodeStudio\resources\app\extensions\kha\Kha\Tools\haxe" />
+		<movie preferredSDK="..\..\..\KodeStudio\resources\app\extensions\kha\Kha\Tools\haxe" />
 	</output>
 	<!-- Other classes to be compiled into your SWF -->
 	<classpaths>
-		<class path="c:\Program Files\KodeStudio\resources\app\extensions\kha\Kha\Sources" />
-		<class path="c:\Program Files\KodeStudio\resources\app\extensions\kha\Kha\Backends\HTML5" />
+		<class path="..\..\..\KodeStudio\resources\app\extensions\kha\Kha\Sources" />
+		<class path="..\..\..\KodeStudio\resources\app\extensions\kha\Kha\Backends\HTML5" />
 		<class path="..\Sources" />
 	</classpaths>
 	<!-- Build options -->
@@ -27,7 +27,7 @@
 		<option noInlineOnDebug="False" />
 		<option mainClass="Main" />
 		<option enabledebug="False" />
-		<option additional="-D sys_g1&#xA;-D sys_g2&#xA;-D sys_g3&#xA;-D sys_g4&#xA;-D sys_a1&#xA;-D sys_a2&#xA;-D canvas_id=khanvas&#xA;-D script_name=kha&#xA;-D webgl&#xA;-D sys_html5&#xA;-D kha&#xA;-D kha_version=1611&#xA;-D kha_output=&quot;f:\ProjectsGames\SpaceStructures\build\html5\kha.js&quot;&#xA;" />
+		<option additional="-D sys_g1&#xA;-D sys_g2&#xA;-D sys_g3&#xA;-D sys_g4&#xA;-D sys_a1&#xA;-D sys_a2&#xA;-D canvas_id=khanvas&#xA;-D script_name=kha&#xA;-D webgl&#xA;-D sys_html5&#xA;-D kha&#xA;-D kha_version=1611&#xA;-D kha_output=&quot;g:\SpaceStructures\SpaceStructures\build\html5\kha.js&quot;&#xA;" />
 	</build>
 	<!-- haxelib libraries -->
 	<haxelib>

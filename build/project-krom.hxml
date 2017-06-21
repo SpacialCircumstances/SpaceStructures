@@ -1,17 +1,15 @@
 -cp g:\KodeStudio\resources\app\extensions\kha\Kha\Sources
--cp g:\KodeStudio\resources\app\extensions\kha\Kha\Backends\HTML5
+-cp g:\KodeStudio\resources\app\extensions\kha\Kha\Backends\Krom
 -cp g:\SpaceStructures\SpaceStructures\Sources
+-D js-classic
+-D sys_krom
 -D sys_g1
 -D sys_g2
 -D sys_g3
 -D sys_g4
 -D sys_a1
--D sys_a2
--D canvas_id=khanvas
--D script_name=kha
--D webgl
--D sys_html5
 -D kha
 -D kha_version=1611
--js html5\kha.js
+-js krom\krom.js.temp
+-debug
 -main Main

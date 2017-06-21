@@ -1,6 +1,5 @@
 package;
 
-import kha.Color;
 import kha.Image;
 
 class LinearImageBuilder

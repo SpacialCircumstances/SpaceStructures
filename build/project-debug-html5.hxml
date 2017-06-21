@@ -1,6 +1,6 @@
--cp c:\Program Files\KodeStudio\resources\app\extensions\kha\Kha\Sources
--cp c:\Program Files\KodeStudio\resources\app\extensions\kha\Kha\Backends\HTML5
--cp f:\ProjectsGames\SpaceStructures\Sources
+-cp g:\KodeStudio\resources\app\extensions\kha\Kha\Sources
+-cp g:\KodeStudio\resources\app\extensions\kha\Kha\Backends\HTML5
+-cp g:\SpaceStructures\SpaceStructures\Sources
 -D sys_g1
 -D sys_g2
 -D sys_g3

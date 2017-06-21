@@ -4,7 +4,7 @@
 	<output>
 		<movie outputType="Application" />
 		<movie input="" />
-		<movie path="debug-html5\kha.js" />
+		<movie path="krom\krom.js.temp" />
 		<movie fps="30" />
 		<movie width="1200" />
 		<movie height="900" />
@@ -17,7 +17,7 @@
 	<!-- Other classes to be compiled into your SWF -->
 	<classpaths>
 		<class path="..\..\..\KodeStudio\resources\app\extensions\kha\Kha\Sources" />
-		<class path="..\..\..\KodeStudio\resources\app\extensions\kha\Kha\Backends\HTML5" />
+		<class path="..\..\..\KodeStudio\resources\app\extensions\kha\Kha\Backends\Krom" />
 		<class path="..\Sources" />
 	</classpaths>
 	<!-- Build options -->
@@ -27,7 +27,7 @@
 		<option noInlineOnDebug="False" />
 		<option mainClass="Main" />
 		<option enabledebug="False" />
-		<option additional="-D sys_g1&#xA;-D sys_g2&#xA;-D sys_g3&#xA;-D sys_g4&#xA;-D sys_a1&#xA;-D sys_a2&#xA;-D canvas_id=khanvas&#xA;-D script_name=kha&#xA;-D webgl&#xA;-D sys_debug-html5&#xA;-D sys_debug_html5&#xA;-D kha&#xA;-D kha_version=1611&#xA;-D kha_output=&quot;g:\SpaceStructures\SpaceStructures\build\debug-html5\kha.js&quot;&#xA;-debug&#xA;" />
+		<option additional="-D js-classic&#xA;-D sys_krom&#xA;-D sys_g1&#xA;-D sys_g2&#xA;-D sys_g3&#xA;-D sys_g4&#xA;-D sys_a1&#xA;-D kha&#xA;-D kha_version=1611&#xA;-D kha_output=&quot;g:\SpaceStructures\SpaceStructures\build\krom\krom.js.temp&quot;&#xA;-debug&#xA;" />
 	</build>
 	<!-- haxelib libraries -->
 	<haxelib>
@@ -49,7 +49,7 @@
 	<options>
 		<option showHiddenPaths="False" />
 		<option testMovie="Webserver" />
-		<option testMovieCommand="debug-html5\index.html" />
+		<option testMovieCommand="krom\index.html" />
 	</options>
 	<!-- Plugin storage -->
 	<storage />
